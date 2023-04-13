@@ -17,4 +17,8 @@ public class JobService {
     public List<JobResponseBean> getJobList() throws IOException, InterruptedException {
         return dansMultiProService.getPositionList();
     }
+
+    public JobResponseBean getJobPositionDetail(String id) {
+        return dansMultiProService.getPositionDetail(id);
+    }
 }

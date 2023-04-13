@@ -49,4 +49,4 @@ services:
   dansmultipro-positions:
     url: /api/recruitment/positions.json
   dansmultipro-positions-detail:
-    url: /api/recruitment/positions/{ID}
+    url: /api/recruitment/positions/{id}

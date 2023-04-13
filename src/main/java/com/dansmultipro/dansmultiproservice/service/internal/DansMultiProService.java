@@ -1,6 +1,5 @@
 package com.dansmultipro.dansmultiproservice.service.internal;
 
-import com.dansmultipro.dansmultiproservice.JobResponseWrapper;
 import com.dansmultipro.dansmultiproservice.bean.JobResponseBean;
 import com.dansmultipro.dansmultiproservice.constant.Constants;
 import com.google.gson.FieldNamingPolicy;
@@ -8,8 +7,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,6 +29,9 @@ public class DansMultiProService {
     private String DANSMULTIPRO_URL;
     @Value("${services.dansmultipro-positions.url}")
     private String DANSMULTIPRO_POSITIONS_URL;
+    @Value("${services.dansmultipro-positions-detail.url}")
+    private String DANSMULTIPRO_POSITIONS_DETAIL_URL;
+
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
@@ -46,4 +50,18 @@ public class DansMultiProService {
 
     }
 
+    public JobResponseBean getPositionDetail(String id) {
+        return WebClient.create(DANSMULTIPRO_URL)
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(DANSMULTIPRO_POSITIONS_DETAIL_URL)
+                        .build(id))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<JobResponseBean>() {
+                })
+                .doOnError(throwable -> {
+                    log.debug("Error while get position detail"+ throwable);
+                })
+                .block();
+    }
 }
